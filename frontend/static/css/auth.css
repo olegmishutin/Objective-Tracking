@@ -1,0 +1,27 @@
+.auth-box{
+    width: 100%;
+    height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-box form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 4px 4px 7px gray;
+    border-radius: 20px;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.auth-box form .textbox{
+    border: 2px solid #6565ff;
+}
+
+.auth-box form input[type='submit']{
+    background-color: #74be74;
+    color: white;
+}

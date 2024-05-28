@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<div class="auth-box">
+    <form action="{% url 'authentication:register' %}" method="post">
+        {% csrf_token %}
+        <h1>Регистрация</h1>
+        <input class="textbox" type="text" name="first_name" placeholder="Имя" required>
+        <input class="textbox" type="text" name="last_name" placeholder="Фамилия" required>
+        <input class="textbox" type="email" name="email" placeholder="Email-адрес" required>
+        <input class="textbox" type="password" name="password" placeholder="Пароль" required>
+        <input type="submit" value="Зарегистрироваться">
+        <a href="{% url 'authentication:login' %}">Авторизоваться</a>
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </form>
+</div>
+</body>
+</html>
