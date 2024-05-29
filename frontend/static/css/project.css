@@ -1,0 +1,24 @@
+.project{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.project__header{
+    width: 800px;
+    height: 200px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.project__header img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project__info__main{
+    margin-top: 15px;
+    margin-bottom: 30px;
+}

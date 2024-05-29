@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/create_project.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="create_project">
+        <h2 class="create_project__hello">Создайте свой проект и следите как он развивается!</h2>
+        <p class="create_project__desc">Но прежде чем начать, аполните немного данных о проекте!</p>
+        <form action="{% url 'projects:create-project' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form_box">
+                <label class="file_upload" for="file_upload">Фотография проекта</label>
+                <input class="file_upload_input" type="file" name="photo" accept="image/*" id="file_upload">
+                <input class="textbox" type="text" name="name" placeholder="Название" required>
+            </div>
+            <textarea class="textbox" name="description" placeholder="Описание"></textarea>
+            <div class="form_box">
+                <div class="form_box">
+                    <label for="date_started">Дата начала</label>
+                    <input class="date" type="date" name="date_started" id="date_started" required>
+                </div>
+                <div class="form_box">
+                    <label for="date_ended">Дата окончания</label>
+                    <input class="date" type="date" name="date_ended" id="date_ended" required>
+                </div>
+            </div>
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            <input type="submit" value="Создать проект">
+        </form>
+    </div>
+{% endblock content %}

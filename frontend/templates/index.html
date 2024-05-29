@@ -1,3 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
 {% block content %}
+    <div class="index">
+        <ul class="index__list">
+            {% for project in projects %}
+                <li class="index__list__element">
+                    {% if project.image %}
+                        <div class="index__list__element__image">
+                            <img src="{{ project.image.url }}" alt="project image">
+                        </div>
+                    {% endif %}
+                    <h2><a href="{% url 'projects:project' project.id %}">{{ project.name }}</a></h2>
+                    <span>{% if project.is_completed %} Закончен {% else %} Незакончен {% endif %}</span>
+                    <p>Дата начала: {{ project.date_started|date:'d.m.y' }}</p>
+                    <p>Дата окончания: {{ project.date_ended|date:'d.m.y' }}</p>
+                    {% if project.owner == request.user %}
+                        <form action="{% url 'projects:delete-project' project.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="Удалить">
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

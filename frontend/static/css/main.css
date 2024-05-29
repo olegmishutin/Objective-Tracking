@@ -17,10 +17,16 @@ input[type='text'],
 input[type='email'],
 input[type='tel'],
 input[type='number'],
-input[type='password'] {
+input[type='password'],
+input[type='date'],
+textarea, select{
     padding: 10px;
     border-radius: 20px;
     outline: none;
+}
+
+textarea{
+    resize: none;
 }
 
 button,

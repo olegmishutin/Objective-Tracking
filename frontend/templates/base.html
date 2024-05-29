@@ -13,17 +13,14 @@
 <body>
 <header class="header">
     <div class="header__box">
-        <div class="header__box__logo">
+        <a href="{% url 'projects:index' %}" class="header__box__logo">
             <img src="{% static 'images/logo.png' %}" alt="logo">
-        </div>
+        </a>
         <h1 class="header__box__name">Objective Tracking</h1>
         <nav class="header__box__nav">
             <ul>
                 <li>
-                    <a href="">Создать проект</a>
-                </li>
-                <li>
-                    <a href="">Проекты</a>
+                    <a href="{% url 'projects:create-project' %}">Создать проект</a>
                 </li>
                 <li>
                     <a href="">Мои задачи</a>

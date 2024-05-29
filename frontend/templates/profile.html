@@ -19,7 +19,7 @@
             {% csrf_token %}
             <div class="modal__box profile__modal">
                 <label for="file-upload" class="file_upload">Загрузить фото</label>
-                <input id="file-upload" type="file" name="photo" class="file_upload_input"/>
+                <input id="file-upload" type="file" name="photo" class="file_upload_input" accept="image/*"/>
                 <input class="textbox" type="text" name="first_name" placeholder="Имя" value="{{ user.first_name }}"
                        required>
                 <input class="textbox" type="text" name="last_name" placeholder="Фамилия" value="{{ user.last_name }}"

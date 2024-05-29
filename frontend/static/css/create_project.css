@@ -1,0 +1,51 @@
+.create_project{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.create_project form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.create_project .form_box{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.create_project .file_upload_input{
+    display: none;
+}
+
+.create_project .file_upload{
+    padding: 10px;
+    background-color: #ffbf51;
+    border-radius: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.create_project form .textbox{
+    border: 2px solid #ff4d4d;
+}
+
+.create_project form textarea{
+    width: 500px;
+    height: 300px;
+}
+
+.create_project form .date{
+    border: 2px solid #6565ff;
+}
+
+.create_project form input[type='submit']{
+    background-color: #74be74;
+    color: white;
+}
