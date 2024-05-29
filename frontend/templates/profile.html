@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="profile">
+        <div class="profile__photo">
+            <img src="{% if user.photo %} {{ user.photo.url }} {% else %} {% static 'images/user.jpg' %} {% endif %}"
+                 alt="user photo">
+        </div>
+        <div class="profile__info">
+            <h1 class="profile__info__first_name">Добрый день {{ user.get_full_name }}!</h1>
+            <h3 class="profile__info__first_name">Ваш email: {{ user.email }}</h3>
+            <button id="open_modal_button">Изменить</button>
+        </div>
+        <form action="{% url 'users:profile' %}" method="post" class="modal" id="modal" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal__box profile__modal">
+                <label for="file-upload" class="file_upload">Загрузить фото</label>
+                <input id="file-upload" type="file" name="photo" class="file_upload_input"/>
+                <input class="textbox" type="text" name="first_name" placeholder="Имя" value="{{ user.first_name }}"
+                       required>
+                <input class="textbox" type="text" name="last_name" placeholder="Фамилия" value="{{ user.last_name }}"
+                       required>
+                <input class="textbox" type="email" name="email" placeholder="Email-адрес" value="{{ user.email }}"
+                       required>
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+                <input type="submit" value="Изменить профиль">
+                <button type="button" id="close_modal_button">Закрыть</button>
+            </div>
+        </form>
+    </div>
+    <script src="{% static 'js/modal.js' %}"></script>
+{% endblock %}
