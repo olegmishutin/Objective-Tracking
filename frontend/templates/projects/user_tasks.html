@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/user_tasks.css' %}">
+{% endblock %}
+{% block content %}
+    <form action="{% url 'projects:my-task' 0 %}" method="post" class="my_tasks">
+        {% csrf_token %}
+        <input type="submit" value="Отправить данные о конечности задач">
+        <ul class="my_tasks__list">
+            {% for task in tasks %}
+                <li class="my_tasks__list__element">
+                    <div class="my_tasks__list__element__box">
+                        <input type="checkbox" name="task_{{ task.id }}_checkbox" {% if task.is_completed %}
+                               checked {% endif %}>
+                        <h2>{{ task.name }}</h2>
+                        <p><b>Дата окончания:</b> {{ task.date_to_end|date:'d.m.Y' }}</p>
+                        <p><b>Проект:</b> {{ task.project.name }}</p>
+                    </div>
+                    <p class="description"><b>Описание задачи:</b> {{ task.description }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+{% endblock %}

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/user_tasks.css' %}">
     <link rel="stylesheet" href="{% static 'css/create_project.css' %}">
     <link rel="stylesheet" href="{% static 'css/project.css' %}">
 {% endblock %}
@@ -22,8 +23,8 @@
                             <input class="textbox" type="text" name="name" placeholder="Название"
                                    value="{{ project.name }}" required>
                         </div>
-                        <textarea class="textbox" name="description"
-                                  placeholder="Описание">{{ project.description }}</textarea>
+                        <textarea class="textbox" name="description" placeholder="Описание"
+                                  required>{{ project.description }}</textarea>
                         <div class="form_box">
                             <div class="form_box">
                                 <label for="date_started">Дата начала</label>
@@ -68,6 +69,27 @@
                     <p>Руководитель проекта: {{ project.owner.get_full_name }}</p>
                     <p>Email руководителя: {{ project.owner.email }}</p>
                 </div>
+                {% if tasks %}
+                    <form action="{% url 'projects:my-task' project.id %}" method="post" class="my_tasks">
+                        {% csrf_token %}
+                        <input type="submit" value="Отправить данные о конечности задач">
+                        <ul class="my_tasks__list">
+                            {% for task in tasks %}
+                                <li class="my_tasks__list__element">
+                                    <div class="my_tasks__list__element__box">
+                                        <input type="checkbox" name="task_{{ task.id }}_checkbox"
+                                                {% if task.is_completed %}
+                                               checked {% endif %}>
+                                        <h2>{{ task.name }}</h2>
+                                        <p><b>Дата окончания:</b> {{ task.date_to_end|date:'d.m.Y' }}</p>
+                                        <p><b>Проект:</b> {{ task.project.name }}</p>
+                                    </div>
+                                    <p class="description"><b>Описание задачи:</b> {{ task.description }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </form>
+                {% endif %}
             {% endif %}
         </div>
     </div>

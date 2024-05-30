@@ -13,5 +13,6 @@ urlpatterns = [
          name='remove-participant'),
     path('project/<int:pk>/create-task/', views.createTask, name='create-task'),
     path('delete-task/<int:pk>/', login_required(views.DeleteTask.as_view()), name='delete-task'),
-    path('project/<int:projectPk>/task/<int:pk>/', login_required(views.TaskDetail.as_view()), name='task-edit')
+    path('project/<int:projectPk>/task/<int:pk>/', login_required(views.TaskDetail.as_view()), name='task-edit'),
+    path('my-tasks/<int:projectId>/', login_required(views.TasksList.as_view()), name='my-task'),
 ]

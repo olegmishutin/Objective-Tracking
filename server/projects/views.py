@@ -23,6 +23,15 @@ class ProjectDetail(generic.DetailView):
     template_name = 'projects/project.html'
     context_object_name = 'project'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_object()
+
+        if self.request.user != project.owner:
+            context['tasks'] = project.tasks.filter(executor_id=self.request.user.id)
+
+        return context
+
     def get(self, request, *args, **kwargs):
         project = self.get_object()
 
@@ -156,20 +165,39 @@ class TaskDetail(generic.DetailView):
             form = TaskForm(request.POST, instance=task)
 
             if form.is_valid():
-                task = form.save(commit=False)
+                retTask = form.save(commit=False)
 
                 if request.POST.get('email'):
                     executor = get_object_or_404(get_user_model(), email=request.POST.get('email'))
 
                     if project.participants.filter(id=executor.id).exists():
-                        task.executor = executor
+                        retTask.executor = executor
                 else:
-                    task.executor = None
-                task.save()
+                    retTask.executor = None
+                retTask.save(update_fields=['name', 'description', 'date_to_end', 'executor'])
             else:
                 return HttpResponse(status=400)
             return redirect('projects:project', pk=project.id)
         return HttpResponse(status=403)
+
+
+class TasksList(generic.ListView):
+    model = Task
+    template_name = 'projects/user_tasks.html'
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        return self.request.user.tasks.all()
+
+    def post(self, request, projectId=0, *args, **kwargs):
+        tasks = self.get_queryset() if not projectId else get_object_or_404(Projects, pk=projectId).tasks.filter(
+            executor__id=request.user.id)
+
+        for task in tasks:
+            task.is_completed = True if request.POST.get(f'task_{task.id}_checkbox') else False
+            task.save(update_fields=['is_completed'])
+
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 class DeleteTask(generic.DeleteView):
