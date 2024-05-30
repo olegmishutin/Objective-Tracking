@@ -49,3 +49,11 @@
     background-color: #74be74;
     color: white;
 }
+
+.create_project form .button{
+    border-radius: 20px;
+    padding: 10px;
+    background-color: #ffbf51;
+    color: white;
+    font-weight: 600;
+}

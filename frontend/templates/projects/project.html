@@ -1,65 +1,72 @@
-{% extends 'base.html' %}
+{% extends 'projects/project_base.html' %}
 {% load static %}
-{% block stylesheet %}
-    <link rel="stylesheet" href="{% static 'css/create_project.css' %}">
-    <link rel="stylesheet" href="{% static 'css/project.css' %}">
-{% endblock %}
-{% block content %}
-    <div class="project">
-        <div class="project__info">
-            {% if project.image %}
-                <div class="project__header">
-                    <img src="{{ project.image.url }}" alt="project header">
-                </div>
-            {% endif %}
-            {% if project.owner == request.user %}
-                <div class="create_project">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form_box">
-                            <label class="file_upload" for="file_upload">Фотография проекта</label>
-                            <input class="file_upload_input" type="file" name="photo" accept="image/*" id="file_upload">
-                            <input class="textbox" type="text" name="name" placeholder="Название"
-                                   value="{{ project.name }}" required>
-                        </div>
-                        <textarea class="textbox" name="description"
-                                  placeholder="Описание">{{ project.description }}</textarea>
-                        <div class="form_box">
-                            <div class="form_box">
-                                <label for="date_started">Дата начала</label>
-                                <input class="date" type="date" name="date_started" id="date_started"
-                                       value="{{ project.date_started|date:'Y-m-d' }}" required>
-                            </div>
-                            <div class="form_box">
-                                <label for="date_ended">Дата окончания</label>
-                                <input class="date" type="date" name="date_ended" id="date_ended"
-                                       value="{{ project.date_ended|date:'Y-m-d' }}" required>
-                            </div>
-                        </div>
-                        <div class="form_box">
-                            <p>Создан: {{ project.created_at }}, Статус: <select name="is_completed">
-                                <option value="false">Незакончен</option>
-                                <option value="true">Закончен</option>
-                            </select></p>
-                        </div>
-                        {% for message in messages %}
-                            <p>{{ message }}</p>
-                        {% endfor %}
-                        <input type="submit" value="Изменить">
-                    </form>
-                </div>
-            {% else %}
-                <div class="project__info__main">
-                    <h2>Название проекта: {{ project.name }}</h2>
-                    <h4>Описание проекта: {{ project.description }}</h4>
-                </div>
-                <div class="project__info__other">
-                    <p>Дата создания: {{ project.created_at }}</p>
-                    <p>Дата начала: {{ project.date_started }}</p>
-                    <p>Дата окончания: {{ project.date_ended }}</p>
-                    <p>Статус: {% if project.is_completed %} Закончен {% else %} Незакончен {% endif %}</p>
-                </div>
-            {% endif %}
+{% block projectContent %}
+    <div class="project__info__participants" id="participant_page">
+        <div class="project__info__participants__header">
+            <h2>Участники проекта</h2>
+            <h2 id="task_page_button">Задачи проекта</h2>
         </div>
+        <form action="{% url 'projects:add-participant' project.id %}" method="post">
+            {% csrf_token %}
+            <input class="textbox" type="email" name="email" placeholder="Email пользователя" required>
+            <input type="submit" value="Добавить участника">
+        </form>
+        <ul class="project__info__participants__list">
+            {% for participant in project.participants.all %}
+                {% if participant != request.user %}
+                    <li class="project__info__participants__list__element">
+                        {% if participant.photo %}
+                            <div class="project__info__participants__list__element__photo">
+                                <img src="{{ participant.photo.url }}" alt="">
+                            </div>
+                        {% endif %}
+                        <p>Фамилия: <b>{{ participant.last_name }}</b></p>
+                        <p>Email: <b>{{ participant.email }}</b></p>
+                        <form action="{% url 'projects:remove-participant' project.id participant.id %}"
+                              method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="Удалить участника">
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     </div>
+    <div class="project__info__tasks" id="participant_tasks">
+        <div class="project__info__participants__header">
+            <h2 id="participant_page_button">Участники проекта</h2>
+            <h2>Задачи проекта</h2>
+        </div>
+        <div class="create_project">
+            <form action="{% url 'projects:create-task' project.id %}" method="post">
+                {% csrf_token %}
+                <input class="textbox" type="text" name="name" placeholder="Название задачи" required>
+                <textarea class="textbox" name="description" placeholder="Описание задачи" required></textarea>
+                <div class="form_box">
+                    <div class="form_box">
+                        <label for="date_to_end">Дата окончания задачи</label>
+                        <input class="textbox" type="date" name="date_to_end" id="date_to_end" required>
+                    </div>
+                    <input class="textbox" type="email" name="email" placeholder="Email участника">
+                </div>
+                <input type="submit" value="Создать задачу">
+            </form>
+        </div>
+        <ul class="project__info__participants__list">
+            {% for task in project.tasks.all %}
+                <li class="project__info__participants__list__element">
+                    <p>Название: <b>{{ task.name }}</b></p>
+                    <p>Статус: <b>{% if task.is_completed %} Закончен {% else %} Незакончен {% endif %}</b></p>
+                    <p>Дата окончания: <b>{{ task.date_to_end|date:'d.m.y' }}</b></p>
+                    <p>Исполнитель: <b>{{ task.executor.last_name }}</b></p>
+                    <form action="{% url 'projects:delete-task' task.id %}" method="post">
+                        {% csrf_token %}
+                        <a href="{% url 'projects:task-edit' project.id task.id %}" class="button">Изменить</a>
+                        <input type="submit" value="Удалить задачу">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script src="{% static 'js/project_page_contoller.js' %}"></script>
 {% endblock %}

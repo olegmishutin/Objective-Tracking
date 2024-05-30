@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/create_project.css' %}">
+    <link rel="stylesheet" href="{% static 'css/project.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="project">
+        <div class="project__info">
+            {% if project.image %}
+                <div class="project__header">
+                    <img src="{{ project.image.url }}" alt="project header">
+                </div>
+            {% endif %}
+            {% if project.owner == request.user %}
+                <div class="create_project">
+                    <form action="{% url 'projects:project' project.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form_box">
+                            <label class="file_upload" for="file_upload">Фотография проекта</label>
+                            <input class="file_upload_input" type="file" name="photo" accept="image/*" id="file_upload">
+                            <input class="textbox" type="text" name="name" placeholder="Название"
+                                   value="{{ project.name }}" required>
+                        </div>
+                        <textarea class="textbox" name="description"
+                                  placeholder="Описание">{{ project.description }}</textarea>
+                        <div class="form_box">
+                            <div class="form_box">
+                                <label for="date_started">Дата начала</label>
+                                <input class="date" type="date" name="date_started" id="date_started"
+                                       value="{{ project.date_started|date:'Y-m-d' }}" required>
+                            </div>
+                            <div class="form_box">
+                                <label for="date_ended">Дата окончания</label>
+                                <input class="date" type="date" name="date_ended" id="date_ended"
+                                       value="{{ project.date_ended|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                        <div class="form_box">
+                            <p>Создан: {{ project.created_at }}, Статус: <select name="is_completed">
+                                <option value="false">Незакончен</option>
+                                {% if project.is_completed %}
+                                    <option value="true" selected="selected">Закончен</option>
+                                {% else %}
+                                    <option value="true">Закончен</option>
+                                {% endif %}
+                            </select></p>
+                        </div>
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                        <input type="submit" value="Изменить">
+                    </form>
+                </div>
+                {% block projectContent %}{% endblock %}
+            {% else %}
+                <div class="project__info__main">
+                    <h2>Название проекта: {{ project.name }}</h2>
+                    <h4>Описание проекта: {{ project.description }}</h4>
+                </div>
+                <div class="project__info__other">
+                    <p>Дата создания: {{ project.created_at }}</p>
+                    <p>Дата начала: {{ project.date_started }}</p>
+                    <p>Дата окончания: {{ project.date_ended }}</p>
+                    <p>Статус: {% if project.is_completed %} Закончен {% else %} Незакончен {% endif %}</p>
+                </div>
+                <div class="project__info__other">
+                    <p>Руководитель проекта: {{ project.owner.get_full_name }}</p>
+                    <p>Email руководителя: {{ project.owner.email }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

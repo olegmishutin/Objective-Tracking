@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'css/create_project.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="create_project">
+        <form action="{% url 'projects:task-edit' projectId task.id %}" method="post">
+            {% csrf_token %}
+            <input class="textbox" type="text" name="name" placeholder="Название задачи" value="{{ task.name }}"
+                   required>
+            <textarea class="textbox" name="description" placeholder="Описание задачи"
+                      required>{{ task.description }}</textarea>
+            <div class="form_box">
+                <div class="form_box">
+                    <label for="date_to_end">Дата окончания задачи</label>
+                    <input class="textbox" type="date" name="date_to_end" id="date_to_end"
+                           value="{{ task.date_to_end|date:'Y-m-d' }}" required>
+                </div>
+                <input class="textbox" type="email" name="email" placeholder="Email участника"
+                       value="{{ task.executor.email }}">
+            </div>
+            <form_box>
+                <a href="{% url 'projects:project' projectId %}" class="button">Назад</a>
+                <input type="submit" value="Изменить задачу">
+            </form_box>
+        </form>
+    </div>
+{% endblock %}

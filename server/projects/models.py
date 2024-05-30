@@ -47,13 +47,15 @@ class Task(models.Model):
     created_at = models.DateTimeField('время создания', auto_now_add=True)
     date_to_end = models.DateTimeField('дата окончания')
 
-    executor = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='tasks')
+    executor = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, related_name='tasks',
+                                 null=True, blank=True)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name='tasks')
 
     class Meta:
         db_table = 'Task'
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.name
