@@ -13,8 +13,10 @@ class Projects(models.Model):
     date_started = models.DateTimeField('дата начала')
     date_ended = models.DateTimeField('дата окончания')
 
-    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='my_projects')
-    participants = models.ManyToManyField(get_user_model(), related_name='projects', db_table='UserProject')
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='my_projects',
+                              verbose_name='Владелец')
+    participants = models.ManyToManyField(get_user_model(), related_name='projects', db_table='UserProject',
+                                          verbose_name='Участники')
 
     class Meta:
         db_table = 'Projects'
@@ -48,8 +50,8 @@ class Task(models.Model):
     date_to_end = models.DateTimeField('дата окончания')
 
     executor = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, related_name='tasks',
-                                 null=True, blank=True)
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name='tasks')
+                                 null=True, blank=True, verbose_name='Исполнитель')
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name='tasks', verbose_name='Проект')
 
     class Meta:
         db_table = 'Task'
